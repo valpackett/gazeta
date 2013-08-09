@@ -10,7 +10,7 @@
 
 (defn pub! [topic message]
   (>!! incoming [topic message])
-  true)
+  topic)
 
 (defn pub-error! [topic error message]
   (let [data {:error error
@@ -21,7 +21,8 @@
 
 (defn sub! [topic callback]
   {:pre [(keyword? topic) (ifn? callback)]}
-  (boolean (swap! callbacks #(update-in % [topic] conj callback))))
+  (swap! callbacks #(update-in % [topic] conj callback))
+  topic)
 
 (defn sub-all-errors! [callback]
   {:pre [(ifn? callback)]}
@@ -31,7 +32,8 @@
 (defn sub-errors! [topic callback]
   {:pre [(ifn? callback)]}
   (sub! (error-channel-name topic)
-        (fn [{:keys [error topic message]}] (callback error topic message))))
+        (fn [{:keys [error topic message]}] (callback error topic message)))
+  topic)
 
 (go
   (while true
