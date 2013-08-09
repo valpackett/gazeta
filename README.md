@@ -1,6 +1,7 @@
 # gazeta
 
-A publish-subscribe (PubSub) framework for Clojure, based on core.async.
+A publish-subscribe (PubSub) framework for Clojure, based on core.async.  
+Has Lamina integration.
 
 ## Usage
 
@@ -61,3 +62,44 @@ They accept functions that take the error, the topic and the message as separate
 
 `try+` from [slingshot](https://github.com/scgilardi/slingshot) is used, so any object can be caught.  
 If you want to use slingshot's advanced matching though, use `try+` explicitly in the subscriber :-)
+
+### Lamina integration
+
+```clojure
+(ns app
+  (:use [gazeta core lamina])
+  (:require [lamina.core :as lamina]
+            [lamina.executor :as executor]))
+
+(sub! :results (fn [r] (println (str "Result: " r))))
+
+(pub-on-realized! :results (executor/task (+ 1 2)))
+
+;;;; Asynchronously printed to console:
+; Result: 3
+
+
+(def lamina-results (lamina/channel))
+
+(pub-lamina-channel! :results lamina-results)
+
+(lamina/enqueue lamina-results 1)
+(lamina/enqueue lamina-results 2)
+
+;;;; Asynchronously printed to console:
+; Result: 1
+; Result: 2
+
+
+(def lamina-receiver (lamina/channel))
+
+(sub-lamina-channel! :messages lamina-receiver)
+
+(pub! :messages "hello")
+
+(lamina/read-channel lamina-receiver)
+
+; << "hello" >>
+```
+
+*Note:* gazeta does not depend on lamina.
