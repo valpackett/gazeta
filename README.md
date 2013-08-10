@@ -122,7 +122,14 @@ You can pipe gazeta topics with lamina channels using `pub-lamina-channel!` and 
 (pub! :messages "hello")
 (lamina/read-channel lamina-receiver)
 
-; << "hello" >>
+; "hello"
+
+(def lamina-receiver-2 (lamina-channel-for-topic :messages))
+(pub! :messages "hello")
+(lamina/read-channel lamina-receiver-2)
+
+; "hello"
+
 
 (sub! :results (fn [r] (println (str "Result: " r))))
 (pub-on-realized! :results (executor/task (+ 1 2)))

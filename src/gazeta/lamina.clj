@@ -13,3 +13,8 @@
 
 (defn sub-lamina-channel! [topic ch]
   (sub! topic (fn [message] (enqueue ch message))))
+
+(defn lamina-channel-for-topic [topic]
+  (let [ch (channel)]
+    (sub-lamina-channel! topic ch)
+    ch))
