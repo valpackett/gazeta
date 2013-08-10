@@ -1,7 +1,7 @@
 # gazeta
 
 A publish-subscribe (PubSub) framework for Clojure, based on core.async.  
-Has Lamina integration.
+Has Lamina and RxJava integration.
 
 ## Usage
 
@@ -65,9 +65,20 @@ They accept functions that take the error, the topic and the message as separate
 `try+` from [slingshot](https://github.com/scgilardi/slingshot) is used, so any object can be caught.  
 If you want to use slingshot's advanced matching though, use `try+` explicitly in the subscriber :-)
 
+### Unsubscribing
+
+Just pass the same args to `unsub!`:
+
+```clojure
+(let [cb (fn [msg] (println (str "Message: " msg)))]
+  (sub! :messages cb)
+  (pub! :messages "Hello!")
+  (unsub! :messages cb))
+```
+
 ### Chains
 
-Interesingly, `pub!`, `sub!` and `sub-errors!` return the topic name, so you can chain them with `->`:
+Interesingly, `pub!`, `sub!`, `unsub!` and `sub-errors!` return the topic name, so you can chain them with `->`:
 
 ```clojure
 (-> :thingy
@@ -121,3 +132,43 @@ You can pipe gazeta topics with lamina channels using `pub-lamina-channel!` and 
 ```
 
 *Note:* gazeta does not depend on lamina.
+
+### RxJava integration
+
+You can subscribe to topics as Observables using `observable-for-topic` and pipe Observables into topics using `observable-to-topic!` from `gazeta.rx`:
+
+```clojure
+(ns app
+  (:use [gazeta core rx])
+  (:import rx.Observable))
+
+(sub! :from-rx (fn [msg] (println (str "From rx: " msg))))
+(observable-to-topic! :from-rx (Observable/from ["hello" "world"]))
+
+;;;; Asynchronously printed to console:
+; From rx: world
+; From rx: hello
+
+(-> (observable-for-topic :to-rx)
+    (.subscribe (fn [msg] (println (str "To rx: " msg)))))
+(pub! :to-rx "hi")
+
+;;;; Asynchronously printed to console:
+; To rx: hi
+```
+
+*Note:* gazeta does not depend on rxjava-core nor rxjava-clojure.
+
+Gazeta also exposes RxJava integration as a class to use from other JVM languages.
+Here's a Scala example:
+
+```scala
+import gazeta.RxGazeta
+import rx.Observable
+
+RxGazeta.observableForTopic("to-scala")
+  .subscribe((message: String) => {
+    println("Scala got: " + message)
+    RxGazeta.observableToTopic("from-scala", Observable.just("Got a message"))
+  })
+```

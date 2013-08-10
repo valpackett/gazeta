@@ -8,7 +8,8 @@
                  [slingshot "0.10.3"]]
   :profiles {:dev {:dependencies [[midje "1.5.0"]
                                   [lein-release "1.0.0"]
-                                  [lamina "0.5.0-rc3"]]}}
+                                  [lamina "0.5.0-rc3"]
+                                  [com.netflix.rxjava/rxjava-clojure "0.9.0"]]}}
   :plugins [[lein-midje "3.0.0"]
             [lein-release "1.0.0"]]
   :bootclasspath true

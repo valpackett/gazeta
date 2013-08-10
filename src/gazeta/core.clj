@@ -32,7 +32,11 @@
 (defn sub-errors! [topic callback]
   {:pre [(ifn? callback)]}
   (sub! (error-channel-name topic)
-        (fn [{:keys [error topic message]}] (callback error topic message)))
+        (fn [{:keys [error topic message]}] (callback error topic message))))
+
+(defn unsub! [topic callback]
+  {:pre [(keyword? topic) (ifn? callback)]}
+  (swap! callbacks #(update-in % [topic] (partial remove #{callback})))
   topic)
 
 (go
