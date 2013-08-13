@@ -1,3 +1,9 @@
+Current [semantic](http://semver.org/) version:
+
+```clojure
+[gazeta "0.1.0-SNAPSHOT"]
+```
+
 # gazeta
 
 A publish-subscribe (PubSub) framework for Clojure, based on core.async.  
