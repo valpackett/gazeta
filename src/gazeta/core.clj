@@ -26,18 +26,28 @@
 
 (defn sub-all-errors! [callback]
   {:pre [(ifn? callback)]}
-  (sub! :errors
-        (fn [{:keys [error topic message]}] (callback error topic message))))
+  (let [f (fn [{:keys [error topic message]}] (callback error topic message))]
+    (sub! :errors f)
+    f))
 
 (defn sub-errors! [topic callback]
   {:pre [(ifn? callback)]}
-  (sub! (error-channel-name topic)
-        (fn [{:keys [error topic message]}] (callback error topic message))))
+  (let [f (fn [{:keys [error topic message]}] (callback error topic message))]
+    (sub! (error-channel-name topic) f)
+    f))
 
 (defn unsub! [topic callback]
   {:pre [(keyword? topic) (ifn? callback)]}
   (swap! callbacks #(update-in % [topic] (partial remove #{callback})))
   topic)
+
+(defn unsub-all-errors! [callback]
+  {:pre [(ifn? callback)]}
+  (unsub! :errors callback))
+
+(defn unsub-errors! [topic callback]
+  {:pre [(ifn? callback)]}
+  (unsub! (error-channel-name topic) callback))
 
 (go
   (while true

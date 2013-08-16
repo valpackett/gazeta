@@ -73,13 +73,20 @@ If you want to use slingshot's advanced matching though, use `try+` explicitly i
 
 ### Unsubscribing
 
-Just pass the same args to `unsub!`:
+Just pass the same args to `unsub!` for regular subscriptions:
 
 ```clojure
 (let [cb (fn [msg] (println (str "Message: " msg)))]
   (sub! :messages cb)
   (pub! :messages "Hello!")
   (unsub! :messages cb))
+```
+
+For error subscriptions, use the returned function instead:
+
+```clojure
+(let [new-cb (sub-errors! :topic (fn [err topic msg] (prn err topic msg)))]
+  (unsub-errors! :topic new-cb))
 ```
 
 ### Chains
