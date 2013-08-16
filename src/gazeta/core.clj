@@ -49,6 +49,9 @@
   {:pre [(ifn? callback)]}
   (unsub! (error-channel-name topic) callback))
 
+(defn unsub-all-the-things! []
+  (swap! callbacks (constantly {})))
+
 (go
   (while true
     (let [[topic message] (<! incoming)]

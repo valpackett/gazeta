@@ -89,6 +89,8 @@ For error subscriptions, use the returned function instead:
   (unsub-errors! :topic new-cb))
 ```
 
+To destroy all the subscriptions, simply `(unsub-all-the-things!)`.
+
 ### Chains
 
 Interesingly, `pub!`, `sub!`, `unsub!` and `sub-errors!` return the topic name, so you can chain them with `->`:
