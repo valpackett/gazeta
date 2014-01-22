@@ -1,0 +1,1 @@
+(ns gazeta.core-test)
