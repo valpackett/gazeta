@@ -9,12 +9,9 @@
                  [slingshot "0.10.3"]]
   :profiles {:dev {:dependencies [[lein-release "1.0.0"]
                                   [com.keminglabs/cljx "0.3.2"]
-                                  [prismatic/cljs-test "0.0.6"]
                                   [lamina "0.5.0-rc3"]
-                                  [com.netflix.rxjava/rxjava-clojure "0.9.0"]]}}
-;                   :plugins [[com.cemerick/austin "0.1.3"]]
-;                   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl
-;                                                     cljx.repl-middleware/wrap-cljx]}}}
+                                  [com.netflix.rxjava/rxjava-clojure "0.9.0"]]
+                   :plugins [[com.cemerick/clojurescript.test "0.2.1"]]}}
   :plugins [[lein-release "1.0.0"]
             [lein-cljsbuild "1.0.0-alpha2"]
             [com.keminglabs/cljx "0.3.2"]]
@@ -43,7 +40,12 @@
                                       "target/generated/src/cljs" "target/generated/test/cljs"]
                       :compiler {:output-to "target/unit-test.js"
                                  :optimizations :whitespace
-                                 :pretty-print true}}}}
+                                 :pretty-print true}}}
+              ; Require PhantomJS 1.9.2: http://phantomjs.org/
+              ;     $ lein cljsbuild test
+              :test-commands {"unit" ["phantomjs" :runner
+                                      "window.literal_js_was_evaluated=true"
+                                      "target/unit-test.js"]}}
   :bootclasspath true
   :lein-release {:deploy-via :lein-deploy}
   :repositories [["snapshots" {:url "https://clojars.org/repo" :creds :gpg}]
