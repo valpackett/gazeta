@@ -1,13 +1,13 @@
-(defproject gazeta "0.2.0"
+(defproject gazeta "0.2.0-SNAPSHOT"
   :description "Publish-subscribe (pubsub) framework for Clojure and ClojureScript"
   :url "https://github.com/myfreeweb/gazeta"
   :license {:name "WTFPL"
             :url "http://www.wtfpl.net/about/"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [org.clojure/clojurescript "0.0-2138"]
                  [org.clojure/core.async "0.1.267.0-0d7780-alpha"]
                  [slingshot "0.10.3"]]
   :profiles {:dev {:dependencies [[lein-release "1.0.0"]
+                                  [org.clojure/clojurescript "0.0-2138"]
                                   [com.keminglabs/cljx "0.3.2"]
                                   [lamina "0.5.0-rc3"]
                                   [com.netflix.rxjava/rxjava-clojure "0.9.0"]]

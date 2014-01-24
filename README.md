@@ -1,7 +1,7 @@
 Current [semantic](http://semver.org/) version:
 
 ```clojure
-[gazeta "0.2.0"]
+[gazeta "0.2.0-SNAPSHOT"]
 ```
 
 # gazeta
