@@ -1,0 +1,1 @@
+(ns gazeta.lamina-test)

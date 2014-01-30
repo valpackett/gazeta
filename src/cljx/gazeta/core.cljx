@@ -1,6 +1,8 @@
 (ns gazeta.core
-  (:use [clojure.core async]
-        [slingshot slingshot]))
+  #+clj (:require [clojure.core.async :refer [chan >!! <! go]]
+                  [slingshot.slingshot :refer [try+]])
+  #+cljs (:require [cljs.core.async :refer [chan put! <!]])
+  #+cljs (:require-macros [cljs.core.async.macros :refer [go]]))
 
 (def incoming (chan))
 (def callbacks (atom {}))
@@ -9,7 +11,8 @@
   (keyword (str "errors-" (name topic))))
 
 (defn pub! [topic message]
-  (>!! incoming [topic message])
+  #+clj (>!! incoming [topic message])
+  #+cljs (put! incoming [topic message])
   topic)
 
 (defn pub-error! [topic error message]
@@ -57,7 +60,11 @@
     (let [[topic message] (<! incoming)]
       (doseq [cb (get @callbacks topic)]
         (go
-          (try+
-            (cb message)
-            (catch Object error
-              (pub-error! topic error message))))))))
+          #+clj (try+
+                 (cb message)
+                 (catch Object error
+                   (pub-error! topic error message)))
+          #+cljs (try
+                   (cb message)
+                   (catch js/Error error
+                     (pub-error! topic error message))))))))

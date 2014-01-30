@@ -1,12 +1,12 @@
 Current [semantic](http://semver.org/) version:
 
 ```clojure
-[gazeta "0.1.0-SNAPSHOT"]
+[gazeta "0.2.0-SNAPSHOT"]
 ```
 
 # gazeta
 
-A publish-subscribe (PubSub) framework for Clojure, based on core.async.  
+A publish-subscribe (PubSub) framework for Clojure and ClojureScript, based on core.async.  
 Has Lamina and RxJava integration.
 
 ## Usage
@@ -15,7 +15,7 @@ Has Lamina and RxJava integration.
 
 ```clojure
 (ns app
-  (:use gazeta.core))
+  (:require [gazeta.core :as gazeta :refer [pub! sub!]]))
 
 (sub! :posts
   (fn [{:keys [user text]}]
@@ -38,7 +38,7 @@ They accept functions that take the error, the topic and the message as separate
 
 ```clojure
 (ns app
-  (:use gazeta.core))
+  (:require [gazeta.core :as gazeta :refer [sub-all-errors! sub-errors! sub! pub!]]))
 
 (sub-all-errors!
   (fn [error topic message]
@@ -68,7 +68,7 @@ They accept functions that take the error, the topic and the message as separate
 ; java.lang.Exception: I am an error! happened with message something on topic :actions
 ```
 
-`try+` from [slingshot](https://github.com/scgilardi/slingshot) is used, so any object can be caught.  
+`try+` from [slingshot](https://github.com/scgilardi/slingshot) is used in Clojure, so any object can be caught.  
 If you want to use slingshot's advanced matching though, use `try+` explicitly in the subscriber :-)
 
 ### Unsubscribing
